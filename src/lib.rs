@@ -368,7 +368,7 @@ pub mod doctests;
 // stuttering.
 pub mod error;
 mod impls;
-#[cfg(feature = "init-unstable")]
+//#[cfg(feature = "init-unstable")]
 pub mod init;
 #[doc(hidden)]
 pub mod layout;
@@ -422,7 +422,7 @@ use util::MetadataOf;
 pub use crate::layout::*;
 // Used by `TryFromBytes::is_bit_valid`.
 #[doc(hidden)]
-pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
+pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr, PtrInner};
 // For each trait polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
 // the inherent method/function over a trait method/function. Thus, we suppress
@@ -1399,6 +1399,32 @@ pub unsafe trait Immutable {
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::TryFromBytes;
 
+/// TODO
+///
+/// # Safety
+///
+/// Something about `Self` having a field of a certain type existing given an
+/// initialization state `S`.
+pub unsafe trait HasField<Field, const FIELD_IDX: u128, S: init::State> {
+    // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
+    // safe.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The type of the field.
+    type Type: ?Sized;
+
+    /// The initialization state of this field in `S`.
+    type State;
+
+    /// The outer initialization state `S`, having replaced [`State`] with `T`.
+    type MapState<T>;
+
+    fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type>;
+}
+
 /// Types for which some bit patterns are valid.
 ///
 /// A memory region of the appropriate length which contains initialized bytes
@@ -1503,6 +1529,11 @@ pub use zerocopy_derive::TryFromBytes;
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(TryFromBytes)]` to `{Self}`")
 )]
 pub unsafe trait TryFromBytes {
+    /// The state of a `PartiallyUninit<Self>` which is entirely uninitialized.
+    ///
+    /// See the `PartiallyUninit` docs for more information.
+    type Uninit;
+
     // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
     // safe.
     #[doc(hidden)]
