@@ -108,7 +108,7 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
-          # Exclue any combination of zerocopy-derive and any toolchain version
+          # Exclude any combination of zerocopy-derive and any toolchain version
           # other than "msrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave differently on these toolchains.
@@ -152,7 +152,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the `zerocopy-core-error-1-81-0`
+          # Exclude most targets from the `zerocopy-core-error-1-81-0`
           # toolchain since the `zerocopy-core-error-1-81-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
           - toolchain: "zerocopy-core-error-1-81-0"
@@ -173,7 +173,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-core-error-1-81-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the
+          # Exclude most targets from the
           # `zerocopy-diagnostic-on-unimplemented-1-78-0` toolchain since the
           # `zerocopy-diagnostic-on-unimplemented-1-78-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
@@ -195,7 +195,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the
+          # Exclude most targets from the
           # `zerocopy-generic-bounds-in-const-fn-1-61-0` toolchain since the
           # `zerocopy-generic-bounds-in-const-fn-1-61-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
@@ -638,7 +638,7 @@ jobs:
 
   # We can't use this as part of the build matrix because rustup doesn't support
   # the `avr-none` target.
-  check_avr_artmega:
+  check_avr_atmega:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / avr-none)
     steps:
@@ -833,7 +833,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_readme, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks]
+      needs: [build_test, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_readme, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks]
       steps:
         - name: Mark the job as failed
           run: exit 1
